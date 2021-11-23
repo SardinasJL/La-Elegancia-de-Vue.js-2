@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<div id="app">
+    <h1 v-if="genero=='hombre'">Hola Sr. {{name}}</h1>
+    <h1 v-else-if="genero=='mujer'">Hola Sra. {{name}}</h1>
+    <h1 v-else="genero">Así que no puedes decidir. Bien.</h1>
+    <label for="genero">Género</label>
+    <input type="text" v-model="genero" id="genero"><br>
+    <label for="name">Nombre</label>
+    <input type="text" v-model="name" id="name">
+</div>
+
+</body>
+<script src="vue.js"></script>
+<script>
+    new Vue({
+        el: "#app",
+        data: {genero: "", name:""}
+    })
+</script>
+</html>
