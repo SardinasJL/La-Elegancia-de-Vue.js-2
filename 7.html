@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="bootstrap.min.css" type="text/css">
+    <title>Document</title>
+</head>
+<body>
+<div class="container-fluid" id="app">
+    <h1>Tenemos los siguientes carruajes a su disposición</h1>
+    <carruaje v-for="carruaje in carruajes" :carruaje="carruaje" :estado="estado"
+              @seleccionar="seleccionarCarruaje(carruaje)"></carruaje>
+</div>
+<template id="carruaje-template">
+    <li class="list-group-item">
+        El carruaje "{{carruaje.nombre}}" tiene {{carruaje.caballos}} caballo(s)<br>
+        <button class="btn btn-primary" @click="seleccionarCarruaje">{{carruaje.estado}}</button>
+    </li>
+</template>
+</body>
+<script src="vue.js"></script>
+<script>
+    Vue.component("carruaje", {
+        template: "#carruaje-template",
+        props: ["carruaje", "estado"],
+        methods: {
+            seleccionarCarruaje: function () {
+                this.$emit("seleccionar");
+            }
+        }
+    })
+    new Vue({
+        el: "#app",
+        data: {
+            carruajes: [
+                {nombre: "Aldebarán", caballos: 1, estado: "Escoger carruaje"},
+                {nombre: "Rígel", caballos: 2, estado: "Escoger carruaje"},
+                {nombre: "Antares", caballos: 3, estado: "Escoger carruaje"},
+                {nombre: "Altair", caballos: 4, estado: "Escoger carruaje"}
+            ]
+        },
+        methods: {
+            seleccionarCarruaje: function (carruaje) {
+                //Se verifica si el carruaje seleccionado tiene el número suficiente de caballitos
+                //Para montar un carruaje debe tener exactamente 2 caballos
+                if (carruaje.caballos == 2) {
+                    carruaje.estado = "Montando!"
+                } else if (carruaje.caballos < 2) {
+                    carruaje.estado = "Contratar caballos"
+                } else {
+                    carruaje.estado = "Descartar caballos"
+                }
+
+            }
+        }
+    })
+</script>
+</html>

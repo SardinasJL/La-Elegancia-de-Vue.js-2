@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <title>Document</title>
+</head>
+<body>
+<div class="container-fluid" id="app">
+    <h1>Lista de libros</h1>
+    <h3>Libro favorito {{favorito}}</h3>
+    <ul class="list-group">
+        <libro v-for="libro in libros" :libro="libro" ref="child"></libro>
+    </ul>
+    <button class="btn btn-danger" @click="resetearVotos()">Resetear los votos</button>
+
+</div>
+<template id="libro-template" ref="children">
+    <li class="list-group-item">
+        Autor: {{libro.autor}} - Título: {{libro.titulo}} - Votos: {{libro.votos}}
+        <button class="btn btn-primary" @click="elegirFavorito(libro)">Elegir como favorito</button>
+    </li>
+</template>
+</body>
+
+<script src="vue.js"></script>
+<script>
+    Vue.component("libro", {
+        template: "#libro-template",
+        props: ["libro"],
+        methods: {
+            elegirFavorito: function (libro) {
+                this.$parent.favorito = libro.titulo
+            }
+        }
+    })
+
+    new Vue({
+        el: "#app",
+        data: {
+            libros: [
+                {autor: "Adolf Hitler", titulo: "Mi lucha", votos: 1},
+                {autor: "Renato Descartes", titulo: "Discurso del método", votos: 5},
+                {autor: "Platón", titulo: "La apología de Sócrates", votos: 10}
+            ],
+            favorito: ""
+        },
+        methods: {
+            resetearVotos: function () {
+                vm.$refs.children.votos=0; //No funciona :(, pero loe otros métodos si funcionan, quizás la única forma de comunicación entre padre-hijo sea por medio de un bus, o sea, un componente intermedio
+            }
+        }
+
+    })
+
+</script>
+</html>

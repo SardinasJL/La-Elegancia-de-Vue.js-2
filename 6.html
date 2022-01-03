@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="bootstrap.min.css" type="text/css">
+    <title>Document</title>
+</head>
+<body>
+<div class="container-fluid" id="app">
+    <h1>¿Qué planeta te gustaría visitar?</h1>
+    <h3>Cada planeta pude visitarse un máximo de 3 veces</h3>
+    <ul class="list-group">
+        <planeta v-for="planeta in planetas" :planeta="planeta"></planeta>
+    </ul>
+
+</div>
+
+<template id="planeta-template">
+    <li class="list-group-item">
+        Planeta: {{planeta.nombre}} - Visitas {{planeta.visitas}}<br>
+        <button @click="visitar(planeta)" class="btn btn-primary">Visitar</button>
+    </li>
+</template>
+
+</body>
+<script src="vue.js"></script>
+<script>
+    Vue.component("planeta", {
+        template: "#planeta-template",
+        props: ["planeta"],
+        methods: {
+            visitar: function (planeta) {
+                if (planeta.visitas < 3) {
+                    planeta.visitas++;
+                } else {
+                    alert("Ya visitó este planeta 3 veces")
+                }
+            }
+        }
+    })
+    new Vue({
+        el: "#app",
+        data: {
+            planetas: [
+                {
+                    nombre: "Mercurio",
+                    visitas: 0
+                },
+                {
+                    nombre: "Venus",
+                    visitas: 2
+                },
+                {
+                    nombre: "Marte",
+                    visitas: 1
+                },
+                {
+                    nombre: "Júpiter",
+                    visitas: 1
+                }
+            ]
+        }
+    })
+
+
+</script>
+</html>

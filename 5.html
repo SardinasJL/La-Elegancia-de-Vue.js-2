@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="bootstrap.min.css" type="text/css">
+    <title>Document</title>
+</head>
+<body>
+<div class="container-fluid">
+    <h1>Personas</h1>
+    <ul class="list-group">
+        <li class="list-group-item" v-for="persona in personasOrdenadasPorEdad()">
+            Nombre: {{persona.nombre}} Edad: {{persona.edad}}
+        </li>
+    </ul>
+    <h1>Personas Mayores</h1>
+    <ul class="list-group">
+        <li class="list-group-item" v-for="persona in personasMayores()">
+            Nombre: {{persona.nombre}} Edad: {{persona.edad}}
+        </li>
+    </ul>
+</div>
+</body>
+<script src="vue.js"></script>
+<script>
+    new Vue({
+        el: ".container-fluid",
+        data: {
+            personas: [
+                {nombre: "Juan", edad: 10},
+                {nombre: "Pedro", edad: 19},
+                {nombre: "Matusalén", edad: 120},
+                {nombre: "Roberto", edad: 40},
+                {nombre: "El Viejo", edad: 80},
+                {nombre: "Bebé", edad: 0.5}
+            ]
+        },
+        methods: {
+            personasOrdenadasPorEdad: function () {
+                return this.personas.sort(function (a, b){return a.edad - b.edad})
+            },
+            personasMayores: function (){
+                return this.personas.filter(function (persona){
+                    return persona.edad >= 65;
+                })
+            }
+        }
+    })
+</script>
+</html>

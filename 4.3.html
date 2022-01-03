@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="bootstrap.min.css" type="text/css">
+    <title>Document</title>
+</head>
+<body>
+<div class="container-fluid">
+    <h1>Gente de Vue</h1>
+    <ul class="list-group">
+        <li class="list-group-item" v-for="candidato in candidatos">
+            Nombre: {{candidato.nombre}}  Votos: {{candidato.votos}}
+            <button @click="candidato.votos++" class="btn btn-primary">Votar</button>
+        </li>
+    </ul>
+    <input type="text" @keyup.delete="reset" class="form-control" placeholder="Presione suprimir para resetear">
+    <h2>Nuestro alcalde es {{alcalde.nombre}}</h2>
+</div>
+
+</body>
+<script src="vue.js"></script>
+<script>
+    new Vue({
+        el: ".container-fluid",
+        data: {
+            candidatos: [
+                {
+                    nombre: "Mr. Black",
+                    votos: 0,
+                }, {
+                    nombre: "Mr. Pink",
+                    votos: 0
+                }, {
+                    nombre: "Mr. White",
+                    votos: 0
+                }, {
+                    nombre: "Mr. Brown",
+                    votos: 0
+                }
+            ]
+        },
+        computed: {
+            alcalde: function (){
+                var candidatosOrdenados = this.candidatos.sort(function (a, b) {
+                    return b.votos - a.votos;
+                });
+                return candidatosOrdenados[0];
+            }
+        },
+        methods: {
+            reset: function (){
+                this.candidatos.map(function (candidato){
+                    candidato.votos = 0;
+                    return candidato;
+                })
+            }
+        }
+    })
+</script>
+</html>
