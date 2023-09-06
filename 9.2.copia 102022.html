@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Historias</title>
+    <link rel="stylesheet" href="bootstrap.min.css" type="text/css">
+</head>
+<body>
+<div class="container-fluid mt-3" id="app">
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Nueva historia</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                            id="close"></button>
+                </div>
+                <form @submit="crearHistoria($event)">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="plot">Plot</label>
+                            <input type="text" class="form-control" id="plot" pattern="[a-zA-Z ]{2,30}" required
+                                   v-model="nuevaHistoria.plot">
+                        </div>
+                        <div class="mb-3">
+                            <label for="writer">Writer</label>
+                            <input type="text" class="form-control" id="writer" pattern="[a-zA-Z ]{3,30}" required
+                                   v-model="nuevaHistoria.writer">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Crear</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            Historias
+        </div>
+        <div class="card-body">
+            <div class="container-fluid text-center align-middle" v-if="loadingStories">
+                <div class="spinner-border"></div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <th class="align-middle text-center col-1">id</th>
+                        <th class="align-middle text-center col-3">Plot</th>
+                        <th class="align-middle text-center col-3">Writer</th>
+                        <th class="align-middle text-center col-1">Upvotes</th>
+                        <th class="align-middle text-center col-2">Editando</th>
+                        <th class="align-middle text-center col-2">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                    data-bs-target="#exampleModal">
+                                Nuevo
+                            </button>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr is="story" v-for="story in stories" :story="story"/>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<template id="story-template">
+    <tr>
+        <td class="align-middle">{{story.id}}</td>
+        <td class="align-middle" v-if="!story.editando">{{story.plot}}</td>
+        <td class="align-middle" v-if="story.editando">
+            <input type="text" class="form-control" v-model="story.plot" @keyup.enter="actualizar(story)">
+        </td>
+        <td class="align-middle" v-if="!story.editando">{{story.writer}}</td>
+        <td class="align-middle" v-if="story.editando">
+            <input type="text" class="form-control" v-model="story.writer" @keyup.enter="actualizar(story)">
+        </td>
+        <td class="align-middle">{{story.upvotes}}</td>
+        <td class="align-middle">{{story.editando}}</td>
+        <td class="align-middle">
+            <div class="btn-group">
+                <button class="btn btn-info" @click="votar(story)" v-if="!story.editando">Votar</button>
+                <button class="btn btn-light" @click="story.editando=true" v-if="!story.editando">Editar</button>
+                <button class="btn btn-danger" @click="eliminar(story)" v-if="!story.editando">Eliminar</button>
+                <button class="btn btn-light" @click="actualizar(story)" v-if="story.editando">Actualizar</button>
+                <button class="btn btn-secondary" @click="story.editando=false" v-if="story.editando">Cancelar</button>
+            </div>
+        </td>
+    </tr>
+</template>
+<script src="bootstrap.bundle.min.js"></script>
+<script src="axios.js"></script>
+<script src="vue.js"></script>
+<script>
+    Vue.component("story", {
+        template: "#story-template",
+        props: ["story"],
+        methods: {
+            votar: async function (story) {
+                try {
+                    story.upvotes++;
+                    await axios.put(`http://127.0.0.1:8000/api/stories/${story.id}`, story);
+                } catch (e) {
+                    console.log(JSON.stringify(e));
+                }
+            },
+            actualizar: async function (story) {
+                try {
+                    await axios.put(`http://127.0.0.1:8000/api/stories/${story.id}`, story);
+                    story.editando = false;
+                } catch (e) {
+                    alert(JSON.stringify(e));
+                }
+            },
+            eliminar: async function (story) {
+                let confirmar = confirm("¿Desea eliminar la historia?");
+                if (confirmar) {
+                    try {
+                        await axios.delete(`http://127.0.0.1:8000/api/stories/${story.id}`);
+                        let currentIndex = this.$parent.stories.indexOf(story);
+                        this.$parent.stories.splice(currentIndex, 1);
+                    } catch (e) {
+                        alert(JSON.stringify(e));
+                    }
+                }
+            }
+        }
+    })
+    new Vue({
+        el: "#app",
+        data: {
+            stories: [],
+            nuevaHistoria: {
+                plot: "",
+                writer: "",
+                upvotes: 0,
+            },
+            loadingStories: true,
+        },
+        methods: {
+            cargarHistorias: async function () {
+                try {
+                    let stories = await axios.get("http://127.0.0.1:8000/api/stories");
+                    this.stories = stories.data.map((story) => {
+                        story.editando = false;
+                        return story;
+                    })
+                } catch (e) {
+                    alert(JSON.stringify(e));
+                } finally {
+                    this.loadingStories = false;
+                }
+            },
+            crearHistoria: async function (event) {
+                event.preventDefault();
+                try {
+                    let nuevaHistoria = await axios.post("http://127.0.0.1:8000/api/stories", this.nuevaHistoria);
+                    nuevaHistoria.data.editando = false;
+                    this.stories.push(nuevaHistoria.data);
+                } catch (e) {
+                    alert(JSON.stringify(e));
+                } finally {
+                    document.getElementById("close").click();
+                }
+            }
+        },
+        mounted: function () {
+            this.cargarHistorias();
+        }
+    })
+</script>
+</body>
+</html>

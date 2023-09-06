@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="bootstrap.min.css" type="text/css">
+</head>
+<body>
+<div class="container-fluid" id="app">
+    <h1>Un formulario de prueba</h1>
+    <h3>Nombre: {{nombre}} - Invalido: {{invalido}} - Discapacidad: {{discapacidad}} - Sexo: {{sexo}} - Ingredientes: {{ingredientes}}</h3>
+    <form action="pepe.php" method="POST">
+        <div class="mb-3">
+            <label for="nombre">Nombre</label>
+            <input type="text" id="nombre" v-model="nombre" class="form-control">
+        </div>
+        <div class="mb-3 form-check">
+            <label for="invalido" class="form-check-label">Invalido</label>
+            <input type="checkbox" id="invalido" class="form-check-input" v-model="invalido" @change="esInvalido()">
+        </div>
+        <div class="mb-3">
+            <label for="discapacidad">Discapacidad</label>
+            <select name="discapacidad" id="discapacidad" v-model="discapacidad" class="form-control">
+                <option value="1">Motora</option>
+                <option value="2">Visual</option>
+                <option value="3">Auditiva</option>
+                <option value="4">Mental</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="hombre" v-model="sexo">
+                <label class="form-check-label" for="exampleRadios1">
+                    Es hombre
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="mujer" v-model="sexo">
+                <label class="form-check-label" for="exampleRadios2">
+                    Es mujer
+                </label>
+            </div>
+            <div class="form-check disabled">
+                <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios3" value="nd" v-model="sexo" disabled>
+                <label class="form-check-label" for="exampleRadios3">
+                    Otro
+                </label>
+            </div>
+        </div>
+        <div class="mb-3">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="ingredientes" id="exampleCheck1" value="tomate" v-model="ingredientes">
+                <label class="form-check-label" for="exampleRadios1">
+                    tomate
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="ingredientes" id="exampleCheck2" value="cebolla" v-model="ingredientes">
+                <label class="form-check-label" for="exampleRadios2">
+                   cebolla
+                </label>
+            </div>
+            <div class="form-check disabled">
+                <input class="form-check-input" type="checkbox" name="ingredientes" id="exampleCheck3" value="queso" v-model="ingredientes">
+                <label class="form-check-label" for="exampleRadios3">
+                    queso
+                </label>
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+<script src="vue.js"></script>
+<script>
+new Vue({
+    el: "#app",
+    data: {
+        nombre: "",
+        invalido: true,
+        discapacidad: "",
+        sexo: "hombre",
+        ingredientes: ["tomate", "queso"]
+    },
+    methods: {
+        esInvalido: function (){
+            alert(this.invalido)
+        }
+    },
+
+})
+</script>
+</html>

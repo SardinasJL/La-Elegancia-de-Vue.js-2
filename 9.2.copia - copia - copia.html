@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="bootstrap.min.css" type="text/css">
+</head>
+<body>
+<div class="container mt-3" id="app">
+    <div class="card">
+        <div class="card-header">
+            Stories
+        </div>
+        <div class="card-body">
+            <div class="container col-md-10">
+                {{storiesId}}<br>
+                {{storyIndiceActual}}<br>
+                {{storyActual}}<br>
+                Registro {{storyIndiceActual + 1}} de {{storiesId.length}}<br>
+
+                <button @click="anteriorHistoria()">Anterior</button>
+                <button @click="siguienteHistoria()">Siguiente</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="vue.js"></script>
+<script src="axios.js"></script>
+<script>
+    new Vue({
+        el: "#app",
+        data: {
+            storiesId: [],
+            storyIndiceActual: 0,
+            storyActual: {}
+        },
+        methods: {
+            cargarHistorias: function () {
+                let vm = this;
+                axios.get("http://127.0.0.1:8000/api/storiesid").then(function (response) {
+                    vm.storiesId = response.data;
+                    vm.cargarHistoria(response.data[0].id)
+                })
+            },
+            cargarHistoria: function (id) {
+                let vm = this;
+                axios.get("http://127.0.0.1:8000/api/stories/" + id).then(function (response) {
+                    vm.storyActual = response.data;
+                })
+            },
+            siguienteHistoria: function () {
+                if (this.storyIndiceActual < this.storiesId.length - 1) {
+                    this.storyIndiceActual++;
+                    this.cargarHistoria(this.storiesId[this.storyIndiceActual].id)
+                } else {
+                    alert("fin del array")
+                }
+            },
+            anteriorHistoria: function () {
+                if (this.storyIndiceActual > 0) {
+                    this.storyIndiceActual--;
+                    this.cargarHistoria(this.storiesId[this.storyIndiceActual].id)
+                }else{
+                    alert("principio del array")
+                }
+            }
+        },
+        mounted: function () {
+            this.cargarHistorias();
+        }
+    })
+</script>
+</html>

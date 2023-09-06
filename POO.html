@@ -1,0 +1,16 @@
+<html>
+<head>
+    <title>Repaso de JS</title>
+</head>
+<body>
+<h1>SALUDO</h1>
+Nombre: <input type="text" id="nombre"><br>
+<button id="saludar">Saludar</button>
+</body>
+<script>
+    document.getElementById("saludar").onclick = function (){
+        var nombre = document.getElementById("nombre").value;
+        alert("Hola " + nombre);
+    }
+</script>
+</html>
